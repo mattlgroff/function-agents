@@ -4,6 +4,8 @@
 
 `function-agents` is a collection of Function Agents with specific purposes, designed to simplify various tasks. To use these agents, you'll need to pass an OpenAI API Key upon construction. This package allows you to interact with different OpenAI agents, transforming unstructured text into a structured JSON response.
 
+For more examples and the full documentation, please visit [https://platform.openai.com/docs/guides/gpt/function-calling](https://platform.openai.com/docs/guides/gpt/function-calling).
+
 ## Installation
 
 To install the package, run the following command:
@@ -32,7 +34,6 @@ import { OpenAIDataTransformationAgent } from 'function-agents';
 This agent is responsible for transforming unstructured text into a structured JSON response using OpenAI's API.
 
 ```javascript
-import OpenAIApi from 'openai';
 import { OpenAIDataTransformationAgent } from 'function-agents';
 
 // Your function definition and system message here.
@@ -44,7 +45,7 @@ const systemMessage = 'Your system message here';
 
 const agent = new OpenAIDataTransformationAgent(
   'your-openai-api-key',
-  'model-name',
+  'gpt-3.5-turbo-0613',
   functionDefinition,
   systemMessage
 );
@@ -55,7 +56,7 @@ const response = await agent.transformer('your unstructured text');
 #### Parameters
 
 1. `openai_api_key`: Your OpenAI API Key.
-2. `model`: The name of the OpenAI model.
+2. `model`: The name of the OpenAI model. Must be either `gpt-3.5-turbo-0613` or `gpt-4-0613` or `gpt-4-32k-0613` 
 3. `functionDefinition`: The function definition in JSON format.
 4. `systemMessage`: The system message in string format.
 
