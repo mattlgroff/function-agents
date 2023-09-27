@@ -101,7 +101,7 @@ response {
 1. `openai_api_key`: Your OpenAI API Key.
 2. `model`: The name of the OpenAI model. Must be either `gpt-3.5-turbo-0613` or `gpt-4-0613` or `gpt-4-32k-0613` 
 3. `functionDefinition`: The function definition in JSON format.
-4. `systemMessage`: The system message in string format.
+4. `systemMessage`: Optional. The system message in string format. Defaults to "You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses" if a systemMessage is not provided.
 
 #### Return Value
 
@@ -113,6 +113,16 @@ type FunctionAgentResponse = {
   success: boolean;
   error?: unknown;
 };
+```
+
+## Build Instructions
+Install [Bun](https://bun.sh/)
+
+Run the following commands:
+```bash
+bun install
+
+bun run build
 ```
 
 ## Contributing
