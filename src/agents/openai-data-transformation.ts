@@ -35,12 +35,12 @@ import { FunctionAgentResponse } from '..';
  *       required: ['temperature_number', 'temperature_current_type', 'temperature_desired_type'],
  *   },
  * };
- * 
- * 
+ *
+ *
  * const systemMessage = 'You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses.';
- * 
+ *
  * const agent = new OpenAIDataTransformationAgent('openai-api-key', 'gpt-3.5-turbo-0613', functionDefinition, systemMessage);
- * 
+ *
  * const response = await agent.run('I want to convert a temperature in Fahrenheit to Celsius. It is 32 degrees Fahrenheit.');
  */
 class OpenAIDataTransformationAgent {
@@ -53,7 +53,7 @@ class OpenAIDataTransformationAgent {
         openai_api_key: string,
         model: string,
         functionDefinition: OpenAIApi.Chat.ChatCompletionCreateParams.Function,
-        systemMessage: string = 'You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses.',
+        systemMessage: string = 'You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses.'
     ) {
         this.openai = new OpenAIApi({
             apiKey: openai_api_key,
