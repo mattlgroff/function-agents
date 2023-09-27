@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A collection of Function Agents with specific purposes, utilizing the OpenAI API.",
   "scripts": {
     "build": "bun build --target=node ./src/index.ts --outfile=dist/index.js && bun run build:declaration",
@@ -32,5 +32,6 @@
     "function calling"
   ],
   "author": "Matthew Groff",
-  "license": "MIT"
+  "license": "MIT",
+  "files": ["dist/*.js", "dist/*.d.ts"]
 }

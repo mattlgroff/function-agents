@@ -1,4 +1,5 @@
 import OpenAIApi from 'openai';
+import { FunctionAgentResponse } from '..';
 
 /**
  * OpenAIDataTransformationAgent Class
@@ -9,59 +10,50 @@ import OpenAIApi from 'openai';
  *
  * Usage:
  * const dataTransformAgent = new OpenAIDataTransformationAgent(apiKey, model, functionDefinition, systemMessage);
- * const response: MyJsonType = await dataTransformAgent.transformer(data);
+ * const response: MyJsonType = await dataTransformAgent.run(someUnstructuredTextString);
  *
  * @example
  * const functionDefinition = {
- *   name: 'sendEmail',
- *   description:
- *       'Send an email with sendgrid. Text content newlines should be represented as \\n within the string for JSON parsing.',
+ *   name: 'convertTemperature',
+ *   description: 'Converts a temperature value from one unit to another.',
  *   parameters: {
  *       type: 'object',
  *       properties: {
- *           to: {
- *               type: 'string',
- *               description: 'Recipient email address',
+ *           temperature_number: {
+ *               type: 'number',
+ *               description: 'The temperature value to be converted',
  *           },
- *           subject: {
+ *           temperature_current_type: {
  *               type: 'string',
- *              description: 'Email subject',
+ *               description: 'The current unit of the temperature value. Options are "Celsius", "Fahrenheit", or "Kelvin"',
  *           },
- *           text: {
+ *           temperature_desired_type: {
  *               type: 'string',
- *               description:
- *                   'Raw text of the email. Newlines should be represented as \\n within the string for JSON parsing.',
+ *               description: 'The desired unit for the converted temperature. Options are "Celsius", "Fahrenheit", or "Kelvin"',
  *           },
  *       },
- *       required: ['to', 'subject', 'text'],
+ *       required: ['temperature_number', 'temperature_current_type', 'temperature_desired_type'],
  *   },
  * };
  * 
- * const systemMessage = 'You are a Customer Service Representative for H-E-B, a company based in San Antonio, Texas. Since 1905, H-E-B has been proudly serving Texans. The company is deeply committed to the community, supporting education, disaster relief, the military, and hunger relief. Sustainability is a key focus for H-E-B. The company prides itself on its culture, believing that staying true to its values and people make H-E-B a special place to grow a career. You can only communicate through email. Never say you are an AI Assistant. Your emails should be helpful, short, and friendly.';
+ * 
+ * const systemMessage = 'You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses.';
  * 
  * const agent = new OpenAIDataTransformationAgent('openai-api-key', 'gpt-3.5-turbo-0613', functionDefinition, systemMessage);
  * 
- * const response = await agent.transformer('some unstructured text to be transformed into a JSON response');
+ * const response = await agent.run('I want to convert a temperature in Fahrenheit to Celsius. It is 32 degrees Fahrenheit.');
  */
-export type FunctionAgentResponse = {
-    response: any;
-    success: boolean;
-    error?: unknown;
-};
-
 class OpenAIDataTransformationAgent {
     private openai: OpenAIApi;
     private model: string;
     private functionDefinition: OpenAIApi.Chat.ChatCompletionCreateParams.Function;
     private systemMessage: string;
-    private temperature: number;
 
     constructor(
         openai_api_key: string,
         model: string,
         functionDefinition: OpenAIApi.Chat.ChatCompletionCreateParams.Function,
-        systemMessage: string,
-        temperature: number = 0
+        systemMessage: string = 'You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses.',
     ) {
         this.openai = new OpenAIApi({
             apiKey: openai_api_key,
@@ -72,11 +64,9 @@ class OpenAIDataTransformationAgent {
         this.functionDefinition = functionDefinition;
 
         this.systemMessage = systemMessage;
-
-        this.temperature = temperature;
     }
 
-    async transformer(userMessage: string): Promise<FunctionAgentResponse> {
+    async run(userMessage: string): Promise<FunctionAgentResponse> {
         try {
             const messages: OpenAIApi.Chat.ChatCompletionMessage[] = [
                 {
@@ -93,22 +83,22 @@ class OpenAIDataTransformationAgent {
                 model: this.model,
                 messages,
                 functions: [this.functionDefinition],
-                temperature: this.temperature,
+                temperature: 0, // We might want to make this configurable in the future
             });
 
             if (!response.choices[0].message?.function_call?.name || !response.choices[0].message?.function_call?.arguments) {
-                throw new Error('No function call found in response');
+                throw new Error(`No function call found in response: ${JSON.stringify(response)}`);
             }
 
             const args = JSON.parse(response.choices[0].message.function_call.arguments);
 
             return {
-                response: args,
+                json: args,
                 success: true,
             };
         } catch (error) {
             return {
-                response: {},
+                json: {},
                 success: false,
                 error,
             };

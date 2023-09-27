@@ -16,7 +16,7 @@ npm install function-agents
 
 ## Dependencies
 
-- Node.js
+- Node.js (or another JavaScript runtime environment like Bun)
 - OpenAI API Key
 
 ## Getting Started
@@ -36,21 +36,64 @@ This agent is responsible for transforming unstructured text into a structured J
 ```javascript
 import { OpenAIDataTransformationAgent } from 'function-agents';
 
-// Your function definition and system message here.
-const functionDefinition = {
-  // ...
-};
+// Your function definition in JSON format (see examples here https://platform.openai.com/docs/guides/gpt/function-calling )
+  const functionDefinition = {
+    name: 'convertTemperature',
+    description: 'Converts a temperature value from one unit to another.',
+    parameters: {
+        type: 'object',
+        properties: {
+            temperature_number: {
+                type: 'number',
+                description: 'The temperature value to be converted',
+            },
+            temperature_current_type: {
+                type: 'string',
+                description: 'The current unit of the temperature value. Options are "Celsius", "Fahrenheit", or "Kelvin"',
+            },
+            temperature_desired_type: {
+                type: 'string',
+                description: 'The desired unit for the converted temperature. Options are "Celsius", "Fahrenheit", or "Kelvin"',
+            },
+        },
+        required: ['temperature_number', 'temperature_current_type', 'temperature_desired_type'],
+    },
+  };
 
-const systemMessage = 'Your system message here';
-
+// Initialize the agent
 const agent = new OpenAIDataTransformationAgent(
   'your-openai-api-key',
   'gpt-3.5-turbo-0613',
   functionDefinition,
-  systemMessage
 );
 
-const response = await agent.transformer('your unstructured text');
+
+/*
+  Note: You can optionally pass a system message to the agent upon initialization. It defaults to "You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses" if a systemMessage is not provided.
+
+  const agent = new OpenAIDataTransformationAgent(
+    'your-openai-api-key',
+    'gpt-3.5-turbo-0613',
+    functionDefinition,
+    systemMessage,
+  );
+*/
+
+
+// Call the run method on the agent
+ const response = await agent.run('I want to convert a temperature in Fahrenheit to Celsius. It is 32 degrees Fahrenheit.');
+```
+
+If you were to `console.log` out the response, you would see the following:
+```js
+response {
+  json: {
+    temperature_number: 32,
+    temperature_current_type: "Fahrenheit",
+    temperature_desired_type: "Celsius"
+  },
+  success: true
+}
 ```
 
 #### Parameters
@@ -62,11 +105,11 @@ const response = await agent.transformer('your unstructured text');
 
 #### Return Value
 
-The `transformer` function for OpenAIDataTransformationAgent returns a Promise of type `FunctionAgentResponse`.
+The `transform` function for OpenAIDataTransformationAgent returns a Promise of type `FunctionAgentResponse`.
 
 ```
 type FunctionAgentResponse = {
-  response: any;
+  json: any;
   success: boolean;
   error?: unknown;
 };

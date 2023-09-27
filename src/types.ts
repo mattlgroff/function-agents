@@ -1,5 +1,5 @@
 export type FunctionAgentResponse = {
-  response: any;
+  json: any;
   success: boolean;
   error?: unknown;
 };
