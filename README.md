@@ -21,10 +21,14 @@ npm install function-agents
 
 ## Getting Started
 
-Import the package and initialize it as follows:
+Import the agent you want to use into your project:
 
-```javascript
+```typescript
 import { OpenAIDataTransformationAgent } from 'function-agents';
+```
+
+```typescript
+import { OpenAIMathAgent } from 'function-agents';
 ```
 
 ## Usage
@@ -33,7 +37,15 @@ import { OpenAIDataTransformationAgent } from 'function-agents';
 
 This agent is responsible for transforming unstructured text into a structured JSON response using OpenAI's API.
 
-```javascript
+#### Parameters
+
+1. `openai_api_key`: Your OpenAI API Key.
+2. `model`: The name of the OpenAI model. Must be either `gpt-3.5-turbo-0613` or `gpt-4-0613` or `gpt-4-32k-0613` 
+3. `functionDefinition`: The function definition in JSON format.
+4. `systemMessage`: Optional. The system message in string format. Defaults to "You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses" if a systemMessage is not provided.
+
+
+```typescript
 import { OpenAIDataTransformationAgent } from 'function-agents';
 
 // Your function definition in JSON format (see examples here https://platform.openai.com/docs/guides/gpt/function-calling )
@@ -85,16 +97,22 @@ const agent = new OpenAIDataTransformationAgent(
 ```
 
 If you were to `console.log` out the response, you would see the following:
-```js
+```
+
+OpenAIDataTransformationAgent Agent invoked with: Convert 100 degrees Fahrenheit to Celsius 
+
 response {
   json: {
-    temperature_number: 32,
+    temperature_number: 100,
     temperature_current_type: "Fahrenheit",
     temperature_desired_type: "Celsius"
   },
   success: true
 }
 ```
+
+### OpenAIMathAgent
+This agent specializes in performing simple mathematical computations and returns the results.
 
 #### Parameters
 
@@ -103,11 +121,44 @@ response {
 3. `functionDefinition`: The function definition in JSON format.
 4. `systemMessage`: Optional. The system message in string format. Defaults to "You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses" if a systemMessage is not provided.
 
-#### Return Value
+```javascript
+import { OpenAIMathAgent } from 'function-agents';
 
-The `transform` function for OpenAIDataTransformationAgent returns a Promise of type `FunctionAgentResponse`.
+// Initialize the agent
+const mathAgent = new OpenAIMathAgent(
+  'your-openai-api-key',
+  'gpt-3.5-turbo-0613', // Note: GPT 3.5 struggles unless the prompt is extremely clear which numbers are being operated on. GPT 4 is recommended.
+);
 
+// Example usage
+const response = await mathAgent.run('If Johnny has five apples, and Susie gives him two additional apples, how many apples does Johnny have?');
 ```
+
+If you were to `console.log` out the response, you would see the following:
+```
+OpenAIMath Agent invoked with: If Johnny has five apples, and Susie gives him two additional apples, how many apples does Johnny have? 
+
+dataTransformation method invoked with: Johnny has five apples, and Susie gives him two additional apples. 
+
+OpenAIDataTransformationAgent Agent invoked with: Johnny has five apples, and Susie gives him two additional apples. 
+
+mathOperation method invoked with: {"input1":5,"input2":2,"operation":"add"} 
+
+add method invoked with: 5 2 
+
+response {
+  json: {
+    result: 7
+  },
+  success: true
+}
+```
+
+## Return Value for Agent.run()
+
+The `run` method for both agents returns a Promise of type `FunctionAgentJsonResponse`.
+
+```typescript
 type FunctionAgentResponse = {
   json: any;
   success: boolean;

@@ -2,6 +2,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
+    "baseUrl": "./",
+    "paths": { 
+      "@/*": ["src/*"]
+    },
     "lib": ["ESNext"],
     "module": "esnext",
     "target": "esnext",
@@ -18,7 +22,7 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "types": [
-      "bun-types" // add Bun global
+      "bun-types"
     ]
   },
   "include": [

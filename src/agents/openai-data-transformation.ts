@@ -1,5 +1,5 @@
 import OpenAIApi from 'openai';
-import { FunctionAgentResponse } from '..';
+import { FunctionAgentJsonResponse } from '@/types';
 
 /**
  * OpenAIDataTransformationAgent Class
@@ -66,7 +66,8 @@ class OpenAIDataTransformationAgent {
         this.systemMessage = systemMessage;
     }
 
-    async run(userMessage: string): Promise<FunctionAgentResponse> {
+    async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
+        console.log('OpenAIDataTransformationAgent Agent invoked with:', userMessage, '\n');
         try {
             const messages: OpenAIApi.Chat.ChatCompletionMessage[] = [
                 {
