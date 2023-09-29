@@ -57,11 +57,9 @@ OpenAIJavaScriptAdvancedAnalyticsAgent invoked with: What is the square root of 
 
 OpenAIJavascriptDeveloperAgent invoked with: Write a JavaScript function to calculate the square root of 20.
 
-```javascript
 function calculateSquareRoot() {
     return Math.sqrt(20);
 }
-``` 
 
 OpenAIJavascriptDeveloperAgent successfully completed in  1827 ms
 
