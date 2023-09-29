@@ -16,7 +16,7 @@ export type MathResult = {
  * OpenAIMathAgent Class
  *
  * This class is responsible for performing mathematical operations based on the user's text input.
- * It utilizes one other agent for data transformation: 'openai-data-transformation' 
+ * It utilizes one other agent for data transformation: 'openai-data-transformation'
  * The class uses OpenAI API to interact with the model specified during instantiation.
  *
  * Usage:
@@ -47,7 +47,8 @@ class OpenAIMathAgent {
     }
 
     async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
-        console.log('OpenAIMath Agent invoked with:', userMessage, '\n');
+        console.log('OpenAIMathAgent invoked with:', userMessage, '\n');
+        const startTime = Date.now();
         try {
             const messages: OpenAIApi.Chat.ChatCompletionMessage[] = [
                 {
@@ -138,16 +139,22 @@ class OpenAIMathAgent {
                 // Get the math result from the math operation agent
                 const mathOperationResultJson = mathOperationResult.json as MathResult;
 
+                console.log('OpenAIMathAgent successfully completed in ', Date.now() - startTime, 'ms\n');
+
                 return {
                     json: mathOperationResultJson,
                     success: true,
+                    duration: Date.now() - startTime, // duration in ms
                 };
             }
         } catch (error) {
+            console.log('OpenAIMathAgent failed in ', Date.now() - startTime, 'ms\n');
+
             return {
                 json: {},
                 success: false,
                 error,
+                duration: Date.now() - startTime, // duration in ms
             };
         }
     }
@@ -158,6 +165,7 @@ class OpenAIMathAgent {
         userMessage: string
     ): Promise<FunctionAgentJsonResponse> {
         console.log('dataTransformation method invoked with:', userMessage, '\n');
+        const startTime = Date.now();
         try {
             // Call the other agent 'openai-data-transformation'
             const agent = new OpenAIDataTransformationAgent(this.openai.apiKey, this.model, dataTransformationFunction);
@@ -172,12 +180,14 @@ class OpenAIMathAgent {
             return {
                 json: response.json,
                 success: response.success,
+                duration: Date.now() - startTime, // duration in ms
             };
         } catch (error) {
             return {
                 json: {},
                 success: false,
                 error,
+                duration: Date.now() - startTime, // duration in ms
             };
         }
     }
@@ -185,11 +195,13 @@ class OpenAIMathAgent {
     // This method is called by the math agent to perform the math operation on the MathInput json object
     mathOperation(mathInput: MathInput): FunctionAgentJsonResponse {
         console.log('mathOperation method invoked with:', JSON.stringify(mathInput), '\n');
+        const startTime = Date.now();
         if (mathInput.operation == null) {
             return {
                 json: {},
                 success: false,
                 error: `No operation found in math input: ${JSON.stringify(mathInput)}`,
+                duration: Date.now() - startTime, // duration in ms
             };
         }
 
@@ -198,6 +210,7 @@ class OpenAIMathAgent {
                 json: {},
                 success: false,
                 error: `No input1 found in math input: ${JSON.stringify(mathInput)}`,
+                duration: Date.now() - startTime, // duration in ms
             };
         }
 
@@ -206,6 +219,7 @@ class OpenAIMathAgent {
                 json: {},
                 success: false,
                 error: `No input2 found in math input: ${JSON.stringify(mathInput)}`,
+                duration: Date.now() - startTime, // duration in ms
             };
         }
 
@@ -232,6 +246,7 @@ class OpenAIMathAgent {
                         json: {},
                         success: false,
                         error: `Invalid operation "${mathInput.operation}"`,
+                        duration: Date.now() - startTime, // duration in ms
                     };
             }
             return {
@@ -239,12 +254,14 @@ class OpenAIMathAgent {
                     result,
                 },
                 success: true,
+                duration: Date.now() - startTime, // duration in ms
             };
         } catch (error) {
             return {
                 json: {},
                 success: false,
                 error,
+                duration: Date.now() - startTime, // duration in ms
             };
         }
     }

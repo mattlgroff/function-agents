@@ -67,7 +67,8 @@ class OpenAIDataTransformationAgent {
     }
 
     async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
-        console.log('OpenAIDataTransformationAgent Agent invoked with:', userMessage, '\n');
+        console.log('OpenAIDataTransformationAgent invoked with:', userMessage, '\n');
+        const startTime = Date.now();
         try {
             const messages: OpenAIApi.Chat.ChatCompletionMessage[] = [
                 {
@@ -93,15 +94,21 @@ class OpenAIDataTransformationAgent {
 
             const args = JSON.parse(response.choices[0].message.function_call.arguments);
 
+            console.log('OpenAIDataTransformationAgent successfully completed in ', Date.now() - startTime, 'ms\n');
+
             return {
                 json: args,
                 success: true,
+                duration: Date.now() - startTime, // duration in ms
             };
         } catch (error) {
+            console.log('OpenAIDataTransformationAgent failed in ', Date.now() - startTime, 'ms\n');
+
             return {
                 json: {},
                 success: false,
                 error,
+                duration: Date.now() - startTime, // duration in ms
             };
         }
     }
