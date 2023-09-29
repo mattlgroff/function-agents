@@ -145,7 +145,7 @@ class OpenAIJavaScriptAdvancedAnalyticsAgent {
             const finalResponseMessages: ChatCompletionMessageWithFunction[] = [
                 {
                     role: 'system',
-                    content: 'You are an advanced Javascript Analytics agent.',
+                    content: 'You are an advanced Javascript Analytics agent. Do not show code examples to the user, just return the requested result with a brief and friendly manner.',
                 },
                 {
                     role: 'user',
@@ -183,7 +183,7 @@ class OpenAIJavaScriptAdvancedAnalyticsAgent {
             return {
                 message: 'An error occurred while running the agent.',
                 success: false,
-                error,
+                error: JSON.stringify(error),
                 duration: Date.now() - startTime, // duration in ms
             };
         }

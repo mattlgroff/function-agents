@@ -78,7 +78,7 @@ class OpenAIJavascriptDeveloperAgent {
                 code: '',
                 language: 'javascript',
                 success: false,
-                error,
+                error: JSON.stringify(error),
                 duration: Date.now() - startTime, // duration in ms
             };
         }
