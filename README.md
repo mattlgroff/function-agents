@@ -40,10 +40,11 @@ const result = await javascriptFunctionCallTransformationAgent.run('function add
 
 ## Agents
 * OpenAIDataTransformationAgent - `/src/agents/openai-data-transformation.ts`
-* OpenAIMathAgent - `/src/agents/openai-math.ts`
-* OpenAIJavascriptDeveloperAgent - `/src/agents/openai-javascript-developer.ts`
-* OpenAIJavaScriptFunctionCallTransformationAgent - `/src/agents/openai-javascript-function-call-transformation.ts`
+* OpenAIIntentClassificationAgent - `/src/agents/openai-intent-classification.ts`
 * OpenAIJavaScriptCodeInterpreterAgent - `/src/agents/openai-javascript-code-interpreter.ts`
+* OpenAIJavaScriptFunctionCallTransformationAgent - `/src/agents/openai-javascript-function-call-transformation.ts`
+* OpenAIJavascriptDeveloperAgent - `/src/agents/openai-javascript-developer.ts`
+* OpenAIMathAgent - `/src/agents/openai-math.ts`
 
 ## Parameters
 
