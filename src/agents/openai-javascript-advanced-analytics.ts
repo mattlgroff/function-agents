@@ -8,6 +8,26 @@ import {
 import OpenAIJavascriptDeveloperAgent from '@/agents/openai-javascript-developer';
 import OpenAIJavaScriptInterpreter from '@/agents/openai-javascript-interpreter';
 
+/**
+ * OpenAIJavaScriptAdvancedAnalyticsAgent Class
+ * 
+ * This class serves as a specialized analytics agent that orchestrates various sub-agents
+ * for interpreting and running JavaScript code based on prompts from the OpenAI API. The agent
+ * is responsible for generating JavaScript functions, interpreting those functions to fit OpenAI's
+ * Function Calling Schema, and executing the dynamically generated functions.
+ * 
+ * The class maintains private instances of OpenAIJavascriptDeveloperAgent and OpenAIJavaScriptInterpreter,
+ * which handle the actual function generation and interpretation tasks, respectively.
+ * 
+ * Usage:
+ * const analyticsAgent = new OpenAIJavaScriptAdvancedAnalyticsAgent(apiKey, model);
+ * const response: FunctionAgentMessageResponse = await analyticsAgent.run('Calculate the square root of 20.');
+ * 
+ * @example
+ * 
+ * const analyticsAgent = new OpenAIJavaScriptAdvancedAnalyticsAgent('openai-api-key', 'gpt-4-0613');
+ * const response = await analyticsAgent.run('Calculate the square root of 20.');
+ */
 class OpenAIJavaScriptAdvancedAnalyticsAgent {
     private openai: OpenAIApi;
     private model: string;
