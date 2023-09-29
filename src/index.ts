@@ -9,7 +9,7 @@ export { MathInput, MathResult } from './agents/openai-math';
 
 // Export Agents
 export { default as OpenAIDataTransformationAgent } from './agents/openai-data-transformation';
-export { default as OpenAIJavaScriptAdvancedAnalyticsAgent } from './agents/openai-javascript-advanced-analytics';
-export { default as OpenAIJavaScriptInterpreterAgent } from './agents/openai-javascript-interpreter';
+export { default as OpenAIJavaScriptCodeInterpreterAgent } from './agents/openai-javascript-code-interpreter';
+export { default as OpenAIJavaScriptFunctionCallTransformationAgent } from './agents/openai-javascript-function-call-transformation';
 export { default as OpenAIJavascriptDeveloperAgent } from './agents/openai-javascript-developer';
 export { default as OpenAIMathAgent } from './agents/openai-math';

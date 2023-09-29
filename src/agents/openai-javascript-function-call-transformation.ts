@@ -2,7 +2,7 @@ import OpenAIApi from 'openai';
 import { FunctionAgentJsonResponse } from '@/types';
 
 /**
- * OpenAIJavaScriptInterpreterAgent Class
+ * OpenAIJavaScriptFunctionCallTransformationAgent Class
  *
  * This class serves as an interface between a JavaScript function definition and the OpenAI API.
  * It takes in JavaScript function code as a string and outputs a JSON object adhering to the OpenAI Function Calling Schema.
@@ -14,10 +14,10 @@ import { FunctionAgentJsonResponse } from '@/types';
  *
  * @example
  *
- * const jsInterpreter = new OpenAIJavaScriptInterpreterAgent('openai-api-key', 'gpt-4-0613');
+ * const jsInterpreter = new OpenAIJavaScriptFunctionCallTransformationAgent('openai-api-key', 'gpt-4-0613');
  * const response = await jsInterpreter.run('function add(a, b) { return a + b; }');
  */
-class OpenAIJavaScriptInterpreterAgent {
+class OpenAIJavaScriptFunctionCallTransformationAgent {
     private openai: OpenAIApi;
     private model: string;
     private systemMessage: string;
@@ -37,7 +37,7 @@ class OpenAIJavaScriptInterpreterAgent {
     }
 
     async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
-        console.log('OpenAIJavaScriptInterpreterAgent invoked with function code and arguments:', userMessage, '\n');
+        console.log('OpenAIJavaScriptFunctionCallTransformationAgent invoked with function code and arguments:', userMessage, '\n');
         const startTime = Date.now();
         try {
             const messages: OpenAIApi.Chat.ChatCompletionMessage[] = [
@@ -126,7 +126,7 @@ class OpenAIJavaScriptInterpreterAgent {
                 },
             };
 
-            console.log('OpenAIJavaScriptInterpreterAgent successfully completed in ', Date.now() - startTime, 'ms\n');
+            console.log('OpenAIJavaScriptFunctionCallTransformationAgent successfully completed in ', Date.now() - startTime, 'ms\n');
 
             return {
                 json,
@@ -134,7 +134,7 @@ class OpenAIJavaScriptInterpreterAgent {
                 duration: Date.now() - startTime, // duration in ms
             };
         } catch (error) {
-            console.log('OpenAIJavaScriptInterpreterAgent failed in ', Date.now() - startTime, 'ms\n');
+            console.log('OpenAIJavaScriptFunctionCallTransformationAgent failed in ', Date.now() - startTime, 'ms\n');
 
             return {
                 json: {},
@@ -146,4 +146,4 @@ class OpenAIJavaScriptInterpreterAgent {
     }
 }
 
-export default OpenAIJavaScriptInterpreterAgent;
+export default OpenAIJavaScriptFunctionCallTransformationAgent;

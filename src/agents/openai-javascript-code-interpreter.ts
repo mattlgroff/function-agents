@@ -6,33 +6,33 @@ import {
     FunctionAgentCodeResponse,
 } from '@/types';
 import OpenAIJavascriptDeveloperAgent from '@/agents/openai-javascript-developer';
-import OpenAIJavaScriptInterpreter from '@/agents/openai-javascript-interpreter';
+import OpenAIJavaScriptFunctionCallTransformationAgent from '@/agents/openai-javascript-function-call-transformation';
 
 /**
- * OpenAIJavaScriptAdvancedAnalyticsAgent Class
- * 
- * This class serves as a specialized analytics agent that orchestrates various sub-agents
+ * OpenAIJavaScriptCodeInterpreterAgent Class
+ *
+ * This class serves as a specialized code interpreter agent that orchestrates various sub-agents
  * for interpreting and running JavaScript code based on prompts from the OpenAI API. The agent
  * is responsible for generating JavaScript functions, interpreting those functions to fit OpenAI's
  * Function Calling Schema, and executing the dynamically generated functions.
- * 
+ *
  * The class maintains private instances of OpenAIJavascriptDeveloperAgent and OpenAIJavaScriptInterpreter,
  * which handle the actual function generation and interpretation tasks, respectively.
- * 
+ *
  * Usage:
- * const analyticsAgent = new OpenAIJavaScriptAdvancedAnalyticsAgent(apiKey, model);
+ * const analyticsAgent = new OpenAIJavaScriptCodeInterpreterAgent(apiKey, model);
  * const response: FunctionAgentMessageResponse = await analyticsAgent.run('Calculate the square root of 20.');
- * 
+ *
  * @example
- * 
+ *
  * const analyticsAgent = new OpenAIJavaScriptAdvancedAnalyticsAgent('openai-api-key', 'gpt-4-0613');
  * const response = await analyticsAgent.run('Calculate the square root of 20.');
  */
-class OpenAIJavaScriptAdvancedAnalyticsAgent {
+class OpenAIJavaScriptCodeInterpreterAgent {
     private openai: OpenAIApi;
     private model: string;
     private javascriptDeveloperAgent: OpenAIJavascriptDeveloperAgent;
-    private javascriptInterpreterAgent: OpenAIJavaScriptInterpreter;
+    private javascriptFunctionCallTransformationAgent: OpenAIJavaScriptFunctionCallTransformationAgent;
 
     constructor(openai_api_key: string, model: string) {
         this.openai = new OpenAIApi({
@@ -43,14 +43,16 @@ class OpenAIJavaScriptAdvancedAnalyticsAgent {
 
         this.javascriptDeveloperAgent = new OpenAIJavascriptDeveloperAgent(openai_api_key, model);
 
-        this.javascriptInterpreterAgent = new OpenAIJavaScriptInterpreter(openai_api_key, model);
+        this.javascriptFunctionCallTransformationAgent = new OpenAIJavaScriptFunctionCallTransformationAgent(openai_api_key, model);
     }
 
     async run(userMessage: string): Promise<FunctionAgentMessageResponse> {
-        console.log('OpenAIJavaScriptAdvancedAnalyticsAgent invoked with:', userMessage, '\n');
+        // Logging the invocation and starting the timer
+        console.log('OpenAIJavaScriptCodeInterpreterAgent invoked with:', userMessage, '\n');
         const startTime = Date.now();
+
         try {
-            // Prompt OpenAI to generate a prompt to generate a JavaScript function to complete the task
+            // Step 1: Generate a prompt for creating a JavaScript function based on the user's message
             const messages: OpenAIApi.Chat.ChatCompletionMessage[] = [
                 {
                     role: 'system',
@@ -69,28 +71,29 @@ class OpenAIJavaScriptAdvancedAnalyticsAgent {
                 temperature: 0,
             });
 
+            // Error handling: Check if a prompt was actually generated
             if (!response.choices[0].message?.content) {
                 throw new Error(`No content found in response: ${JSON.stringify(response)}`);
             }
 
-            // The prompt to generate a JavaScript function from the response
+            // Extract the generated prompt
             const promptToGenerateFunction = response.choices[0].message?.content;
 
-            // Generate the JavaScript function
+            // Step 2: Generate the actual JavaScript function using the extracted prompt
             const functionResponse: FunctionAgentCodeResponse = await this.javascriptDeveloperAgent.run(promptToGenerateFunction);
 
-            // Check if the function was generated successfully
+            // Error handling: Check if the function was generated successfully
             if (!functionResponse.success) {
                 throw new Error(`Error generating function: ${JSON.stringify(functionResponse)}`);
             }
 
-            // Get the JavaScript function code from the response
+            // Extract the generated JavaScript function code
             const functionCode = functionResponse.code;
 
-            // Interpret the JavaScript function to get the OpenAI Function Calling Schema
-            const interpreterResponse: FunctionAgentJsonResponse = await this.javascriptInterpreterAgent.run(functionCode);
+            // Step 3: Interpret the JavaScript function to conform to OpenAI's Function Calling Schema
+            const interpreterResponse: FunctionAgentJsonResponse = await this.javascriptFunctionCallTransformationAgent.run(functionCode);
 
-            // Check if the function was interpreted successfully
+            // Error handling: Check if the function was interpreted successfully
             if (!interpreterResponse.success) {
                 throw new Error(`Error interpreting function: ${JSON.stringify(interpreterResponse)}`);
             }
@@ -98,7 +101,7 @@ class OpenAIJavaScriptAdvancedAnalyticsAgent {
             const interpretedFunction: OpenAIApi.Chat.ChatCompletionCreateParams.Function = interpreterResponse.json;
             console.log('Generated OpenAI Function Call:', JSON.stringify(interpretedFunction, null, 2) + '\n');
 
-            // Prompt OpenAI to call the interpreted function
+            // Step 4: Call the interpreted function using OpenAI Function Calling
             const functionCallMessages: OpenAIApi.Chat.ChatCompletionMessage[] = [
                 {
                     role: 'system',
@@ -118,6 +121,7 @@ class OpenAIJavaScriptAdvancedAnalyticsAgent {
                 temperature: 0,
             });
 
+            // Error handling: Check if the function was called successfully
             if (
                 !functionCallResponse.choices[0].message?.function_call?.name ||
                 !functionCallResponse.choices[0].message?.function_call?.arguments
@@ -125,27 +129,32 @@ class OpenAIJavaScriptAdvancedAnalyticsAgent {
                 throw new Error(`No function call found in functionCallResponse: ${JSON.stringify(functionCallResponse)}`);
             }
 
+            // Parse the arguments from the function call
             const args = JSON.parse(functionCallResponse.choices[0].message.function_call.arguments);
 
             // Dynamically execute the generated JavaScript function
             // Extract parameter names from the interpreted function schema
             const paramNames = Object.keys(interpretedFunction.parameters?.properties || {});
-            const paramValues = paramNames.map(name => args[name]); // Assuming `args` contains the actual values
 
-            // Generate the dynamic function using `new Function`
+            // Get the actual values for the parameters
+            const paramValues = paramNames.map(name => args[name]);
+
+            // Create the function dynamically
             const functionArgs = paramNames.join(', ');
             const functionToExecute = new Function(functionArgs, `return ${functionCode}(${functionArgs});`);
 
-            // Call the dynamic function
+            // Step 5: Execute the function and capture the result
             const functionResult = functionToExecute(...paramValues);
 
+            // Log the result of the function execution
             console.log('Function result:', functionResult + '\n');
 
-            // Generate the final response to the user
+            // Step 6: Generate the final response to the user
             const finalResponseMessages: ChatCompletionMessageWithFunction[] = [
                 {
                     role: 'system',
-                    content: 'You are an advanced Javascript Analytics agent. Do not show code examples to the user, just return the requested result with a brief and friendly manner.',
+                    content:
+                        'You are an advanced Javascript Analytics agent. Do not show code examples to the user, just return the requested result with a brief and friendly manner.',
                 },
                 {
                     role: 'user',
@@ -158,28 +167,35 @@ class OpenAIJavaScriptAdvancedAnalyticsAgent {
                 },
             ];
 
+            // Create the final response using OpenAI's ChatCompletion API
             const finalResponse: OpenAIApi.Chat.ChatCompletion = await this.openai.chat.completions.create({
                 model: this.model,
                 messages: finalResponseMessages,
                 temperature: 0,
             });
 
+            // Error handling: Check if the final response was generated successfully
             if (!finalResponse.choices[0].message?.content) {
                 throw new Error(`No content found in finalResponse: ${JSON.stringify(finalResponse)}`);
             }
 
+            // Capture the content of the final response message
             const finalResponseMessage = finalResponse.choices[0].message.content;
 
-            console.log('OpenAIJavaScriptAdvancedAnalyticsAgent successfully completed in ', Date.now() - startTime, 'ms\n');
+            // Log the time taken and completion status
+            console.log('OpenAIJavaScriptCodeInterpreterAgent successfully completed in ', Date.now() - startTime, 'ms\n');
 
+            // Return the success response to the caller
             return {
                 message: finalResponseMessage,
                 success: true,
                 duration: Date.now() - startTime, // duration in ms
             };
         } catch (error) {
-            console.log('OpenAIJavaScriptAdvancedAnalyticsAgent failed in ', Date.now() - startTime, 'ms\n');
+            // Log error details and time taken in case of failure
+            console.log('OpenAIJavaScriptCodeInterpreterAgent failed in ', Date.now() - startTime, 'ms\n');
 
+            // Return the failure response to the caller
             return {
                 message: 'An error occurred while running the agent.',
                 success: false,
@@ -190,4 +206,4 @@ class OpenAIJavaScriptAdvancedAnalyticsAgent {
     }
 }
 
-export default OpenAIJavaScriptAdvancedAnalyticsAgent;
+export default OpenAIJavaScriptCodeInterpreterAgent;

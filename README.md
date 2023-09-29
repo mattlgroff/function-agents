@@ -27,22 +27,23 @@ Import the agent you want to use into your project:
 import { OpenAIDataTransformationAgent } from 'function-agents';
 import { OpenAIJavascriptDeveloperAgent } from 'function-agents';
 import { OpenAIMathAgent } from 'function-agents';
-import { OpenAIJavascriptAdvancedAnalyticsAgent } from 'function-agents';
+import { OpenAIJavaScriptCodeInterpreterAgent } from 'function-agents';
+import { OpenAIJavaScriptFunctionCallTransformationAgent } from 'function-agents';
 
-const jsInterpreterAgent = new OpenAIJavascriptInterpreterAgent(
+const javascriptFunctionCallTransformationAgent = new OpenAIJavaScriptFunctionCallTransformationAgent(
     'your-openai-api-key',
     'gpt-4-0613' // or any other supported model
 );
 
-const result = await jsInterpreterAgent.run('function add(a, b) { return a + b; }');
+const result = await javascriptFunctionCallTransformationAgent.run('function add(a, b) { return a + b; }');
 ```
 
 ## Agents
 * OpenAIDataTransformationAgent - `/src/agents/openai-data-transformation.ts`
 * OpenAIMathAgent - `/src/agents/openai-math.ts`
 * OpenAIJavascriptDeveloperAgent - `/src/agents/openai-javascript-developer.ts`
-* OpenAIJavascriptInterpreterAgent - `/src/agents/openai-javascript-interpreter.ts`
-* OpenAIJavascriptAdvancedAnalyticsAgent - `/src/agents/openai-javascript-advanced-analytics.ts`
+* OpenAIJavaScriptFunctionCallTransformationAgent - `/src/agents/openai-javascript-function-call-transformation.ts`
+* OpenAIJavaScriptCodeInterpreterAgent - `/src/agents/openai-javascript-code-interpreter.ts`
 
 ## Parameters
 
@@ -53,7 +54,7 @@ const result = await jsInterpreterAgent.run('function add(a, b) { return a + b; 
 ## Example Console Output
 
 ```bash
-OpenAIJavaScriptAdvancedAnalyticsAgent invoked with: What is the square root of 20? 
+OpenAIJavaScriptCodeInterpreterAgent invoked with: What is the square root of 20? 
 
 OpenAIJavascriptDeveloperAgent invoked with: Write a JavaScript function to calculate the square root of 20.
 
@@ -63,7 +64,7 @@ function calculateSquareRoot() {
 
 OpenAIJavascriptDeveloperAgent successfully completed in  1827 ms
 
-OpenAIJavaScriptInterpreterAgent invoked with function code and arguments: function calculateSquareRoot() {
+OpenAIJavaScriptFunctionCallTransformationAgent invoked with function code and arguments: function calculateSquareRoot() {
     return Math.sqrt(20);
 } 
 
@@ -83,7 +84,7 @@ Calling function with params:
 
 Function result: 4.47213595499958
 
-OpenAIJavaScriptAdvancedAnalyticsAgent successfully completed in  11787 ms
+OpenAIJavaScriptCodeInterpreterAgent successfully completed in  11787 ms
 
 # console.log(response); from agent.run()
 response {
