@@ -40,37 +40,37 @@ Here's a list of available agents with brief descriptions and direct links to th
 
 ### Data Transformation
 
--   **[DataTransformationAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/data-transformation.ts)**
+-   **[DataTransformationAgent](https://github.com/mattlgroff/function-agents/blob/master/src/agents/data-transformation.ts)**
     -   Transforms data based on predefined rules. Currently only supports JSON.
 
 ### Intent Classification
 
--   **[IntentClassificationAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/intent-classification.ts)**
+-   **[IntentClassificationAgent](https://github.com/mattlgroff/function-agents/blob/master/src/agents/intent-classification.ts)**
     -   Classifies user intents based on a set of predefined intents.
 
 ### Sentiment Classification
 
--   **[SentimentClassificationAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/sentiment-classification.ts)**
+-   **[SentimentClassificationAgent](https://github.com/mattlgroff/function-agents/blob/master/src/agents/sentiment-classification.ts)**
     -   Classifies user message's sentiment.
 
 ### Code Interpretation
 
--   **[JavaScriptCodeInterpreterAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/javascript-code-interpreter.ts)**
+-   **[JavaScriptCodeInterpreterAgent](https://github.com/mattlgroff/function-agents/blob/master/src/agents/javascript-code-interpreter.ts)**
     -   Interprets and runs JavaScript code based on prompts from the OpenAI API.
 
 ### Function Call Transformation
 
--   **[JavaScriptFunctionCallTransformationAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/javascript-function-call-transformation.ts)**
+-   **[JavaScriptFunctionCallTransformationAgent](https://github.com/mattlgroff/function-agents/blob/master/src/agents/javascript-function-call-transformation.ts)**
     -   Transforms JavaScript functions to fit OpenAI's Function Calling Schema.
 
 ### JavaScript Development
 
--   **[JavascriptDeveloperAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/javascript-developer.ts)**
+-   **[JavascriptDeveloperAgent](https://github.com/mattlgroff/function-agents/blob/master/src/agents/javascript-developer.ts)**
     -   Generates JavaScript functions based on user-provided prompts.
 
 ### Math Operations
 
--   **[MathAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/math.ts)**
+-   **[MathAgent](https://github.com/mattlgroff/function-agents/blob/master/src/agents/math.ts)**
     -   Performs mathematical operations based on user requests. (addition, subtraction, multiplication, and division so far))
 
 ## Parameters
