@@ -1,5 +1,6 @@
 import OpenAIApi from 'openai';
 import { FunctionAgentJsonResponse } from '@/types';
+import BaseAgent from '@/agents/base-agent';
 
 export interface Intent {
     name: string;
@@ -20,7 +21,7 @@ export interface Intent {
  *   { name: 'complex_math', description: 'A task than can be described as a complex math problem that can be solved with algebra, calculus, or other advanced math.' }
  * ];
  *
- * const agent = new OpenAIIntentClassificationAgent('openai-api-key', 'gpt-4-0613', intents);
+ * const agent = new IntentClassificationAgent('openai-api-key', 'gpt-4-0613', intents);
  *
  * const response = await agent.run('Hello, how are you?');
  *
@@ -39,23 +40,25 @@ export interface Intent {
  *  duration: 3659
  * }
  */
-class OpenAIIntentClassificationAgent {
-    private openai: OpenAIApi;
-    private model: string;
+class IntentClassificationAgent extends BaseAgent {
     private intents: Intent[];
 
     constructor(openai_api_key: string, model: string, intents: Intent[]) {
-        this.openai = new OpenAIApi({
-            apiKey: openai_api_key,
-        });
+        super(openai_api_key, model);
 
-        this.model = model;
+        if (!intents) {
+            throw new Error('Missing intents array');
+        }
+
+        if (intents.length === 0) {
+            throw new Error('Intents array must not be empty');
+        }
 
         this.intents = intents;
     }
 
     async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
-        console.log('OpenAIIntentClassificationAgent invoked with function code and arguments:', userMessage, '\n');
+        console.log('IntentClassificationAgent invoked with function code and arguments:', userMessage, '\n');
         const startTime = Date.now();
         try {
             const systemMessageContent = `You are an Intent Classification Agent. Your goal is to identify the user's intent based on the following possible intents: \n${this.intents
@@ -75,8 +78,6 @@ class OpenAIIntentClassificationAgent {
                 },
             ];
 
-            console.log('OpenAIIntentClassificationAgent messages:', JSON.stringify(messages), '\n');
-
             const intentClassificationFunction: OpenAIApi.Chat.ChatCompletionCreateParams.Function = {
                 name: 'intentClassificationFunction',
                 description: "Classifies the user's intent based on the given user message.",
@@ -87,9 +88,9 @@ class OpenAIIntentClassificationAgent {
                             type: 'string',
                             description: 'The name of the intent that best matches the user message',
                         },
-                        intentDescription: {
+                        whyWasThisIntentChosen: {
                             type: 'string',
-                            description: 'The description of the intent that best matches the user message',
+                            description: 'Explain why this intent was chosen, or why no intent was chosen',
                         },
                         confidentPercentage: {
                             type: 'number',
@@ -102,7 +103,7 @@ class OpenAIIntentClassificationAgent {
                                 'Whether or not the intent was successfully classified. If you are confident that nothing matches, return false. If you are confident of a matching intent, return true.',
                         },
                     },
-                    required: ['intentSuccessfullyClassified'],
+                    required: ['intentSuccessfullyClassified', 'whyWasThisIntentChosen'],
                 },
             };
 
@@ -119,13 +120,16 @@ class OpenAIIntentClassificationAgent {
 
             const args = JSON.parse(response.choices[0].message.function_call.arguments);
 
-            console.log('OpenAIIntentClassificationAgent successfully completed in ', Date.now() - startTime, 'ms\n');
+            console.log('Intent Classified: ', args.intentName, '\n');
+            console.log('Explanation: ', args.whyWasThisIntentChosen, '\n');
+
+            console.log('IntentClassificationAgent successfully completed in ', Date.now() - startTime, 'ms\n');
 
             return {
                 json: {
                     intent: {
                         name: args.intentName ?? null,
-                        description: args.intentDescription ?? null,
+                        whyWasThisIntentChosen: args.whyWasThisIntentChosen ?? null,
                         confidentPercentage: args.confidentPercentage ?? 0,
                         successfullyClassified: args.intentSuccessfullyClassified ?? null,
                     },
@@ -134,13 +138,13 @@ class OpenAIIntentClassificationAgent {
                 duration: Date.now() - startTime, // duration in ms
             };
         } catch (error) {
-            console.log('OpenAIIntentClassificationAgent failed in ', Date.now() - startTime, 'ms\n');
+            console.log('IntentClassificationAgent failed in ', Date.now() - startTime, 'ms\n');
 
             return {
                 json: {
                     intent: {
                         name: null,
-                        description: null,
+                        whyWasThisIntentChosen: null,
                         confidentPercentage: 0,
                         successfullyClassified: false,
                     },
@@ -152,4 +156,4 @@ class OpenAIIntentClassificationAgent {
     }
 }
 
-export default OpenAIIntentClassificationAgent;
+export default IntentClassificationAgent;

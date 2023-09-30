@@ -5,13 +5,14 @@ export {
     FunctionAgentJsonResponse,
     FunctionAgentMessageResponse,
 } from './types';
-export { MathInput, MathResult } from './agents/openai-math';
-export { Intent } from './agents/openai-intent-classification';
+export { MathInput, MathResult } from './agents/math';
+export { Intent } from './agents/intent-classification';
 
 // Export Agents
-export { default as OpenAIDataTransformationAgent } from './agents/openai-data-transformation';
-export { default as OpenAIIntentClassificationAgent } from './agents/openai-intent-classification';
-export { default as OpenAIJavaScriptCodeInterpreterAgent } from './agents/openai-javascript-code-interpreter';
-export { default as OpenAIJavaScriptFunctionCallTransformationAgent } from './agents/openai-javascript-function-call-transformation';
-export { default as OpenAIJavascriptDeveloperAgent } from './agents/openai-javascript-developer';
-export { default as OpenAIMathAgent } from './agents/openai-math';
+export { default as DataTransformationAgent } from './agents/data-transformation';
+export { default as IntentClassificationAgent } from './agents/intent-classification';
+export { default as JavaScriptCodeInterpreterAgent } from './agents/javascript-code-interpreter';
+export { default as JavaScriptFunctionCallTransformationAgent } from './agents/javascript-function-call-transformation';
+export { default as JavascriptDeveloperAgent } from './agents/javascript-developer';
+export { default as MathAgent } from './agents/math';
+export { default as SentimentClassificationAgent } from './agents/sentiment-classification';

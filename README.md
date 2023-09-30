@@ -24,13 +24,9 @@ npm install function-agents
 Import the agent you want to use into your project:
 
 ```typescript
-import { OpenAIDataTransformationAgent } from 'function-agents';
-import { OpenAIJavascriptDeveloperAgent } from 'function-agents';
-import { OpenAIMathAgent } from 'function-agents';
-import { OpenAIJavaScriptCodeInterpreterAgent } from 'function-agents';
-import { OpenAIJavaScriptFunctionCallTransformationAgent } from 'function-agents';
+import { JavaScriptFunctionCallTransformationAgent } from 'function-agents';
 
-const javascriptFunctionCallTransformationAgent = new OpenAIJavaScriptFunctionCallTransformationAgent(
+const javascriptFunctionCallTransformationAgent = new JavaScriptFunctionCallTransformationAgent(
     'your-openai-api-key',
     'gpt-4-0613' // or any other supported model
 );
@@ -39,37 +35,69 @@ const result = await javascriptFunctionCallTransformationAgent.run('function add
 ```
 
 ## Agents
-* OpenAIDataTransformationAgent - `/src/agents/openai-data-transformation.ts`
-* OpenAIIntentClassificationAgent - `/src/agents/openai-intent-classification.ts`
-* OpenAIJavaScriptCodeInterpreterAgent - `/src/agents/openai-javascript-code-interpreter.ts`
-* OpenAIJavaScriptFunctionCallTransformationAgent - `/src/agents/openai-javascript-function-call-transformation.ts`
-* OpenAIJavascriptDeveloperAgent - `/src/agents/openai-javascript-developer.ts`
-* OpenAIMathAgent - `/src/agents/openai-math.ts`
+
+Here's a list of available agents with brief descriptions and direct links to their code:
+
+### Data Transformation
+
+-   **[DataTransformationAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/data-transformation.ts)**
+    -   Transforms data based on predefined rules. Currently only supports JSON.
+
+### Intent Classification
+
+-   **[IntentClassificationAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/intent-classification.ts)**
+    -   Classifies user intents based on a set of predefined intents.
+
+### Sentiment Classification
+
+-   **[SentimentClassificationAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/sentiment-classification.ts)**
+    -   Classifies user message's sentiment.
+
+### Code Interpretation
+
+-   **[JavaScriptCodeInterpreterAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/javascript-code-interpreter.ts)**
+    -   Interprets and runs JavaScript code based on prompts from the OpenAI API.
+
+### Function Call Transformation
+
+-   **[JavaScriptFunctionCallTransformationAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/javascript-function-call-transformation.ts)**
+    -   Transforms JavaScript functions to fit OpenAI's Function Calling Schema.
+
+### JavaScript Development
+
+-   **[JavascriptDeveloperAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/javascript-developer.ts)**
+    -   Generates JavaScript functions based on user-provided prompts.
+
+### Math Operations
+
+-   **[MathAgent](https://github.com/mattlgroff/function-agents/blob/main/src/agents/math.ts)**
+    -   Performs mathematical operations based on user requests. (addition, subtraction, multiplication, and division so far))
 
 ## Parameters
 
 1. `openai_api_key`: Your OpenAI API Key.
 2. `model`: The name of the OpenAI model. Must be either `gpt-3.5-turbo-0613` or `gpt-4-0613` or `gpt-4-32k-0613`
-3. `systemMessage`: Optional. Some agents allow you to pass your own systemMessage.
+
+Note: Some agents may have additional parameters such as the `IntentClassificationAgent` which requires a list of intents to be passed in.
 
 ## Example Console Output
 
 ```bash
-OpenAIJavaScriptCodeInterpreterAgent invoked with: What is the square root of 20? 
+JavaScriptCodeInterpreterAgent invoked with: What is the square root of 20?
 
-OpenAIJavascriptDeveloperAgent invoked with: Write a JavaScript function to calculate the square root of 20.
+JavascriptDeveloperAgent invoked with: Write a JavaScript function to calculate the square root of 20.
 
 function calculateSquareRoot() {
     return Math.sqrt(20);
 }
 
-OpenAIJavascriptDeveloperAgent successfully completed in  1827 ms
+JavascriptDeveloperAgent successfully completed in  1827 ms
 
-OpenAIJavaScriptFunctionCallTransformationAgent invoked with function code and arguments: function calculateSquareRoot() {
+JavaScriptFunctionCallTransformationAgent invoked with function code and arguments: function calculateSquareRoot() {
     return Math.sqrt(20);
-} 
+}
 
-OpenAIJavaScriptInterpreterAgent successfully completed in  3111 ms
+JavaScriptInterpreterAgent successfully completed in  3111 ms
 
 Generated OpenAI Function Call: {
   "name": "calculateSquareRoot",
@@ -81,11 +109,11 @@ Generated OpenAI Function Call: {
   }
 }
 
-Calling function with params: 
+Calling function with params:
 
 Function result: 4.47213595499958
 
-OpenAIJavaScriptCodeInterpreterAgent successfully completed in  11787 ms
+JavaScriptCodeInterpreterAgent successfully completed in  11787 ms
 
 # console.log(response); from agent.run()
 response {

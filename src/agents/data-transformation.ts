@@ -1,8 +1,9 @@
 import OpenAIApi from 'openai';
 import { FunctionAgentJsonResponse } from '@/types';
+import BaseAgent from '@/agents/base-agent';
 
 /**
- * OpenAIDataTransformationAgent Class
+ * DataTransformationAgent Class
  *
  * This class is responsible for transforming unstructured text into a structured JSON response.
  * It leverages the OpenAI API to request a model's completion based on a predefined system message
@@ -39,13 +40,11 @@ import { FunctionAgentJsonResponse } from '@/types';
  *
  * const systemMessage = 'You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses.';
  *
- * const agent = new OpenAIDataTransformationAgent('openai-api-key', 'gpt-3.5-turbo-0613', functionDefinition, systemMessage);
+ * const agent = new DataTransformationAgent('openai-api-key', 'gpt-3.5-turbo-0613', functionDefinition, systemMessage);
  *
  * const response = await agent.run('I want to convert a temperature in Fahrenheit to Celsius. It is 32 degrees Fahrenheit.');
  */
-class OpenAIDataTransformationAgent {
-    private openai: OpenAIApi;
-    private model: string;
+class DataTransformationAgent extends BaseAgent {
     private functionDefinition: OpenAIApi.Chat.ChatCompletionCreateParams.Function;
     private systemMessage: string;
 
@@ -55,11 +54,7 @@ class OpenAIDataTransformationAgent {
         functionDefinition: OpenAIApi.Chat.ChatCompletionCreateParams.Function,
         systemMessage: string = 'You are a data transformation agent. You can transform data from one format to another. You take in unstructured text and you use your functions to return structured, valid JSON responses.'
     ) {
-        this.openai = new OpenAIApi({
-            apiKey: openai_api_key,
-        });
-
-        this.model = model;
+        super(openai_api_key, model);
 
         this.functionDefinition = functionDefinition;
 
@@ -67,7 +62,7 @@ class OpenAIDataTransformationAgent {
     }
 
     async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
-        console.log('OpenAIDataTransformationAgent invoked with:', userMessage, '\n');
+        console.log('DataTransformationAgent invoked with:', userMessage, '\n');
         const startTime = Date.now();
         try {
             const messages: OpenAIApi.Chat.ChatCompletionMessage[] = [
@@ -102,7 +97,7 @@ class OpenAIDataTransformationAgent {
                 duration: Date.now() - startTime, // duration in ms
             };
         } catch (error) {
-            console.log('OpenAIDataTransformationAgent failed in ', Date.now() - startTime, 'ms\n');
+            console.log('DataTransformationAgent failed in ', Date.now() - startTime, 'ms\n');
 
             return {
                 json: {},
@@ -114,4 +109,4 @@ class OpenAIDataTransformationAgent {
     }
 }
 
-export default OpenAIDataTransformationAgent;
+export default DataTransformationAgent;

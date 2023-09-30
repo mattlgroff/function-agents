@@ -1,6 +1,7 @@
 import OpenAIApi from 'openai';
 import { FunctionAgentJsonResponse } from '@/types';
-import OpenAIDataTransformationAgent from '@/agents/openai-data-transformation';
+import DataTransformationAgent from '@/agents/data-transformation';
+import BaseAgent from '@/agents/base-agent';
 
 export type MathInput = {
     input1: number;
@@ -13,25 +14,23 @@ export type MathResult = {
 };
 
 /**
- * OpenAIMathAgent Class
+ * MathAgent Class
  *
  * This class is responsible for performing mathematical operations based on the user's text input.
- * It utilizes one other agent for data transformation: 'openai-data-transformation'
+ * It utilizes one other agent for data transformation: 'data-transformation'
  * The class uses OpenAI API to interact with the model specified during instantiation.
  *
  * Usage:
- * const mathAgent = new OpenAIMathAgent(apiKey, model, systemMessage);
+ * const mathAgent = new MathAgent(apiKey, model, systemMessage);
  * const response: FunctionAgentJsonResponse = await mathAgent.run(userMessage);
  *
  * @example
  *
- * const agent = new OpenAIMathAgent('openai-api-key', 'gpt-3.5-turbo-0613');
+ * const agent = new MathAgent('openai-api-key', 'gpt-3.5-turbo-0613');
  *
  * const response = await agent.run('If Johnny has five apples, and Susie gives him two additional apples, how many apples does Johnny have?');
  */
-class OpenAIMathAgent {
-    private openai: OpenAIApi;
-    private model: string;
+class MathAgent extends BaseAgent {
     private systemMessage: string;
 
     constructor(
@@ -39,15 +38,13 @@ class OpenAIMathAgent {
         model: string,
         systemMessage: string = 'You are a math expert agent. You will take inputs of multiple numbers and compute operations and use your functions to solve the equations.  Do not attempt to solve the problem without using your defined functions.'
     ) {
-        this.openai = new OpenAIApi({
-            apiKey: openai_api_key,
-        });
-        this.model = model;
+        super(openai_api_key, model);
+
         this.systemMessage = systemMessage;
     }
 
     async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
-        console.log('OpenAIMathAgent invoked with:', userMessage, '\n');
+        console.log('MathAgent invoked with:', userMessage, '\n');
         const startTime = Date.now();
         try {
             const messages: OpenAIApi.Chat.ChatCompletionMessage[] = [
@@ -139,7 +136,7 @@ class OpenAIMathAgent {
                 // Get the math result from the math operation agent
                 const mathOperationResultJson = mathOperationResult.json as MathResult;
 
-                console.log('OpenAIMathAgent successfully completed in ', Date.now() - startTime, 'ms\n');
+                console.log('MathAgent successfully completed in ', Date.now() - startTime, 'ms\n');
 
                 return {
                     json: mathOperationResultJson,
@@ -148,7 +145,7 @@ class OpenAIMathAgent {
                 };
             }
         } catch (error) {
-            console.log('OpenAIMathAgent failed in ', Date.now() - startTime, 'ms\n');
+            console.log('MathAgent failed in ', Date.now() - startTime, 'ms\n');
 
             return {
                 json: {},
@@ -167,8 +164,8 @@ class OpenAIMathAgent {
         console.log('dataTransformation method invoked with:', userMessage, '\n');
         const startTime = Date.now();
         try {
-            // Call the other agent 'openai-data-transformation'
-            const agent = new OpenAIDataTransformationAgent(this.openai.apiKey, this.model, dataTransformationFunction);
+            // Call the other agent 'data-transformation'
+            const agent = new DataTransformationAgent(this.openai.apiKey, this.model, dataTransformationFunction);
 
             const response = await agent.run(userMessage);
 
@@ -290,4 +287,4 @@ class OpenAIMathAgent {
     }
 }
 
-export default OpenAIMathAgent;
+export default MathAgent;

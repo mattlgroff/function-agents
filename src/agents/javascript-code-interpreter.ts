@@ -5,11 +5,12 @@ import {
     FunctionAgentMessageResponse,
     FunctionAgentCodeResponse,
 } from '@/types';
-import OpenAIJavascriptDeveloperAgent from '@/agents/openai-javascript-developer';
-import OpenAIJavaScriptFunctionCallTransformationAgent from '@/agents/openai-javascript-function-call-transformation';
+import JavascriptDeveloperAgent from '@/agents/javascript-developer';
+import JavaScriptFunctionCallTransformationAgent from '@/agents/javascript-function-call-transformation';
+import BaseAgent from '@/agents/base-agent';
 
 /**
- * OpenAIJavaScriptCodeInterpreterAgent Class
+ * JavaScriptCodeInterpreterAgent Class
  *
  * This class serves as a specialized code interpreter agent that orchestrates various sub-agents
  * for interpreting and running JavaScript code based on prompts from the OpenAI API. The agent
@@ -20,7 +21,7 @@ import OpenAIJavaScriptFunctionCallTransformationAgent from '@/agents/openai-jav
  * which handle the actual function generation and interpretation tasks, respectively.
  *
  * Usage:
- * const analyticsAgent = new OpenAIJavaScriptCodeInterpreterAgent(apiKey, model);
+ * const analyticsAgent = new JavaScriptCodeInterpreterAgent(apiKey, model);
  * const response: FunctionAgentMessageResponse = await analyticsAgent.run('Calculate the square root of 20.');
  *
  * @example
@@ -28,22 +29,16 @@ import OpenAIJavaScriptFunctionCallTransformationAgent from '@/agents/openai-jav
  * const analyticsAgent = new OpenAIJavaScriptAdvancedAnalyticsAgent('openai-api-key', 'gpt-4-0613');
  * const response = await analyticsAgent.run('Calculate the square root of 20.');
  */
-class OpenAIJavaScriptCodeInterpreterAgent {
-    private openai: OpenAIApi;
-    private model: string;
-    private javascriptDeveloperAgent: OpenAIJavascriptDeveloperAgent;
-    private javascriptFunctionCallTransformationAgent: OpenAIJavaScriptFunctionCallTransformationAgent;
+class JavaScriptCodeInterpreterAgent extends BaseAgent {
+    private javascriptDeveloperAgent: JavascriptDeveloperAgent;
+    private javascriptFunctionCallTransformationAgent: JavaScriptFunctionCallTransformationAgent;
 
     constructor(openai_api_key: string, model: string) {
-        this.openai = new OpenAIApi({
-            apiKey: openai_api_key,
-        });
+        super(openai_api_key, model);
 
-        this.model = model;
+        this.javascriptDeveloperAgent = new JavascriptDeveloperAgent(openai_api_key, model);
 
-        this.javascriptDeveloperAgent = new OpenAIJavascriptDeveloperAgent(openai_api_key, model);
-
-        this.javascriptFunctionCallTransformationAgent = new OpenAIJavaScriptFunctionCallTransformationAgent(openai_api_key, model);
+        this.javascriptFunctionCallTransformationAgent = new JavaScriptFunctionCallTransformationAgent(openai_api_key, model);
     }
 
     async run(userMessage: string): Promise<FunctionAgentMessageResponse> {
@@ -183,7 +178,7 @@ class OpenAIJavaScriptCodeInterpreterAgent {
             const finalResponseMessage = finalResponse.choices[0].message.content;
 
             // Log the time taken and completion status
-            console.log('OpenAIJavaScriptCodeInterpreterAgent successfully completed in ', Date.now() - startTime, 'ms\n');
+            console.log('JavaScriptCodeInterpreterAgent successfully completed in ', Date.now() - startTime, 'ms\n');
 
             // Return the success response to the caller
             return {
@@ -193,7 +188,7 @@ class OpenAIJavaScriptCodeInterpreterAgent {
             };
         } catch (error) {
             // Log error details and time taken in case of failure
-            console.log('OpenAIJavaScriptCodeInterpreterAgent failed in ', Date.now() - startTime, 'ms\n');
+            console.log('JavaScriptCodeInterpreterAgent failed in ', Date.now() - startTime, 'ms\n');
 
             // Return the failure response to the caller
             return {
@@ -206,4 +201,4 @@ class OpenAIJavaScriptCodeInterpreterAgent {
     }
 }
 
-export default OpenAIJavaScriptCodeInterpreterAgent;
+export default JavaScriptCodeInterpreterAgent;

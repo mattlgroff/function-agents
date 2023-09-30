@@ -1,25 +1,24 @@
 import OpenAIApi from 'openai';
 import { FunctionAgentJsonResponse } from '@/types';
+import BaseAgent from '@/agents/base-agent';
 
 /**
- * OpenAIJavaScriptFunctionCallTransformationAgent Class
+ * JavaScriptFunctionCallTransformationAgent Class
  *
  * This class serves as an interface between a JavaScript function definition and the OpenAI API.
  * It takes in JavaScript function code as a string and outputs a JSON object adhering to the OpenAI Function Calling Schema.
  * The class uses a pre-defined system message to set the context for the OpenAI model.
  *
  * Usage:
- * const jsInterpreter = new OpenAIJavaScriptInterpreterAgent(apiKey, model, systemMessage);
- * const response: FunctionAgentJsonResponse = await jsInterpreter.run('function add(a, b) { return a + b; }');
+ * const agent = new JavaScriptFunctionCallTransformationAgent(apiKey, model, systemMessage);
+ * const response: FunctionAgentJsonResponse = await agent.run('function add(a, b) { return a + b; }');
  *
  * @example
  *
- * const jsInterpreter = new OpenAIJavaScriptFunctionCallTransformationAgent('openai-api-key', 'gpt-4-0613');
- * const response = await jsInterpreter.run('function add(a, b) { return a + b; }');
+ * const agent = new JavaScriptFunctionCallTransformationAgent('openai-api-key', 'gpt-4-0613');
+ * const response = await agent.run('function add(a, b) { return a + b; }');
  */
-class OpenAIJavaScriptFunctionCallTransformationAgent {
-    private openai: OpenAIApi;
-    private model: string;
+class JavaScriptFunctionCallTransformationAgent extends BaseAgent {
     private systemMessage: string;
 
     constructor(
@@ -27,17 +26,13 @@ class OpenAIJavaScriptFunctionCallTransformationAgent {
         model: string,
         systemMessage: string = 'You are a JavaScript interpreter agent. You take in JavaScript function code. Your task is to take the function and output in the form of a JSON object matching the OpenAI Function Calling schema using only the interpreterFunction. Do not add any commentary or ask any questions. Strictly run the interpreterFunction and return the JSON object.'
     ) {
-        this.openai = new OpenAIApi({
-            apiKey: openai_api_key,
-        });
-
-        this.model = model;
+        super(openai_api_key, model);
 
         this.systemMessage = systemMessage;
     }
 
     async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
-        console.log('OpenAIJavaScriptFunctionCallTransformationAgent invoked with function code and arguments:', userMessage, '\n');
+        console.log('JavaScriptFunctionCallTransformationAgent invoked with function code and arguments:', userMessage, '\n');
         const startTime = Date.now();
         try {
             const messages: OpenAIApi.Chat.ChatCompletionMessage[] = [
@@ -126,7 +121,7 @@ class OpenAIJavaScriptFunctionCallTransformationAgent {
                 },
             };
 
-            console.log('OpenAIJavaScriptFunctionCallTransformationAgent successfully completed in ', Date.now() - startTime, 'ms\n');
+            console.log('JavaScriptFunctionCallTransformationAgent successfully completed in ', Date.now() - startTime, 'ms\n');
 
             return {
                 json,
@@ -134,7 +129,7 @@ class OpenAIJavaScriptFunctionCallTransformationAgent {
                 duration: Date.now() - startTime, // duration in ms
             };
         } catch (error) {
-            console.log('OpenAIJavaScriptFunctionCallTransformationAgent failed in ', Date.now() - startTime, 'ms\n');
+            console.log('JavaScriptFunctionCallTransformationAgent failed in ', Date.now() - startTime, 'ms\n');
 
             return {
                 json: {},
@@ -146,4 +141,4 @@ class OpenAIJavaScriptFunctionCallTransformationAgent {
     }
 }
 
-export default OpenAIJavaScriptFunctionCallTransformationAgent;
+export default JavaScriptFunctionCallTransformationAgent;
