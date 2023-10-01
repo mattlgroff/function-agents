@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "A collection of Function Agents with specific purposes, utilizing the OpenAI API.",
   "scripts": {
     "build": "bun build --target=node ./src/index.ts --outfile=dist/index.js && bun run build:declaration",
@@ -22,8 +22,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "ical": "^0.8.0",
-    "openai": "^4.10.0"
+    "openai": "^4.11.0"
   },
   "repository": {
     "type": "git",
