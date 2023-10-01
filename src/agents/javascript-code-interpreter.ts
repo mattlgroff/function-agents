@@ -42,6 +42,10 @@ class JavaScriptCodeInterpreterAgent extends BaseAgent {
     }
 
     async run(userMessage: string): Promise<FunctionAgentMessageResponse> {
+        if (!userMessage) {
+            throw new Error('Missing user message');
+        }
+
         // Logging the invocation and starting the timer
         console.log('OpenAIJavaScriptCodeInterpreterAgent invoked with:', userMessage, '\n');
         const startTime = Date.now();

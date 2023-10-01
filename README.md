@@ -73,6 +73,11 @@ Here's a list of available agents with brief descriptions and direct links to th
 -   **[MathAgent](https://github.com/mattlgroff/function-agents/blob/master/src/agents/math.ts)**
     -   Performs mathematical operations based on user requests. (addition, subtraction, multiplication, and division so far))
 
+### Citation
+
+-   **[CitationAgent](https://github.com/mattlgroff/function-agents/blob/master/src/agents/citation.ts)**
+    -   Retrieves and formats citations for content, including `filename`, `pageNumber`, and `explanationOfWhyThisSourceWasChosen`.
+
 ## Parameters
 
 1. `openai_api_key`: Your OpenAI API Key.

@@ -33,6 +33,10 @@ class JavascriptDeveloperAgent extends BaseAgent {
     }
 
     async run(userMessage: string): Promise<FunctionAgentCodeResponse> {
+        if (!userMessage) {
+            throw new Error('Missing user message');
+        }
+
         console.log('JavascriptDeveloperAgent invoked with:', userMessage, '\n');
         const startTime = Date.now();
         try {

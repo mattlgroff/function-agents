@@ -62,6 +62,10 @@ class DataTransformationAgent extends BaseAgent {
     }
 
     async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
+        if (!userMessage) {
+            throw new Error('Missing user message');
+        }
+
         console.log('DataTransformationAgent invoked with:', userMessage, '\n');
         const startTime = Date.now();
         try {

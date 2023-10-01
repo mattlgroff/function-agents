@@ -7,6 +7,17 @@ export type FunctionAgentMessageResponse = {
     error?: unknown;
 };
 
+export interface Citation {
+    filename: string;
+    pageNumber: number;
+    explanationOfWhyThisSourceWasChosen: string;
+}
+
+export type FunctionAgentMessageResponseWithCitation = FunctionAgentMessageResponse & {
+  citation?: Citation;
+  context: string;
+};
+
 export type FunctionAgentJsonResponse = {
     json: any;
     success: boolean;

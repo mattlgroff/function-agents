@@ -1,42 +1,44 @@
 {
-    "name": "function-agents",
-    "module": "index.ts",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "type": "module",
-    "version": "0.0.15",
-    "description": "A collection of Function Agents with specific purposes, utilizing the OpenAI API.",
-    "scripts": {
-        "build": "bun build --target=node ./src/index.ts --outfile=dist/index.js && bun run build:declaration",
-        "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
-        "postbuild": "rimraf tsconfig.types.tsbuildinfo"
-    },
-    "devDependencies": {
-        "bun-types": "latest",
-        "prettier": "^3.0.3",
-        "rimraf": "^5.0.5",
-        "typescript": "^5.2.2"
-    },
-    "peerDependencies": {
-        "typescript": "^5.0.0"
-    },
-    "dependencies": {
-        "openai": "^4.10.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/mattlgroff/function-agents.git"
-    },
-    "keywords": [
-        "OpenAI",
-        "agents",
-        "functions",
-        "function calling"
-    ],
-    "author": "Matthew Groff",
-    "license": "MIT",
-    "files": [
-        "dist/*.js",
-        "dist/*.d.ts"
-    ]
+  "name": "function-agents",
+  "module": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "version": "0.0.15",
+  "description": "A collection of Function Agents with specific purposes, utilizing the OpenAI API.",
+  "scripts": {
+    "build": "bun build --target=node ./src/index.ts --outfile=dist/index.js && bun run build:declaration",
+    "build:declaration": "tsc --emitDeclarationOnly --project tsconfig.types.json",
+    "postbuild": "rimraf tsconfig.types.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@types/ical": "^0.8.1",
+    "bun-types": "latest",
+    "prettier": "^3.0.3",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "ical": "^0.8.0",
+    "openai": "^4.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattlgroff/function-agents.git"
+  },
+  "keywords": [
+    "OpenAI",
+    "agents",
+    "functions",
+    "function calling"
+  ],
+  "author": "Matthew Groff",
+  "license": "MIT",
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts"
+  ]
 }

@@ -58,6 +58,10 @@ class IntentClassificationAgent extends BaseAgent {
     }
 
     async run(userMessage: string): Promise<FunctionAgentJsonResponse> {
+        if (!userMessage) {
+            throw new Error('Missing user message');
+        }
+
         console.log('IntentClassificationAgent invoked with function code and arguments:', userMessage, '\n');
         const startTime = Date.now();
         try {
